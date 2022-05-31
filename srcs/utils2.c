@@ -6,7 +6,7 @@
 /*   By: rsung <rsung@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 15:02:45 by rsung             #+#    #+#             */
-/*   Updated: 2022/05/31 10:55:59 by rsung            ###   ########.fr       */
+/*   Updated: 2022/05/31 11:34:06 by rsung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	is_full(t_philo *philo_array, t_data *info)
 	while (i < info->number_of_philo)
 	{
 		pthread_mutex_lock(&info->eat_mutex);
-		if (philo_array[i].nb_of_meal >= info->times_each_philo_must_eat)
+		if (philo_array[i].nb_of_meal >= info->times_each_philo_must_eat + 1)
 		{
 			pthread_mutex_lock(&info->full_mutex);
 			info->full++;
