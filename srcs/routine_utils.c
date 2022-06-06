@@ -6,7 +6,7 @@
 /*   By: rsung <rsung@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:53:29 by rsung             #+#    #+#             */
-/*   Updated: 2022/05/30 17:39:19 by rsung            ###   ########.fr       */
+/*   Updated: 2022/06/01 16:28:36 by rsung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ int	is_eating(t_philo *philo)
 	if (taking_forks(philo) == 1)
 		return (1);
 	pthread_mutex_lock(&philo->data->eat_mutex);
+	if (check_death(philo) == 1)
+	{
+		unlock_mutexes(philo, 2);
+		return (1);
+	}
 	philo_action(philo, "is eating");
 	pthread_mutex_lock(&philo->data->last_meal_mutex);
 	philo->last_meal = timestamp();
@@ -27,12 +32,10 @@ int	is_eating(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->eat_mutex);
 	if (time_elapsed(philo, 0) == 1)
 	{
-		pthread_mutex_unlock(&philo->data->total_fork[philo->other_fork]);
-		pthread_mutex_unlock(&philo->data->total_fork[philo->my_fork]);
+		unlock_mutexes(philo, 3);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->total_fork[philo->other_fork]);
-	pthread_mutex_unlock(&philo->data->total_fork[philo->my_fork]);
+	unlock_mutexes(philo, 3);
 	usleep(30);
 	return (0);
 }
@@ -44,6 +47,11 @@ int	is_eating2(t_philo *philo)
 	if (taking_forks2(philo) == 1)
 		return (1);
 	pthread_mutex_lock(&philo->data->eat_mutex);
+	if (check_death(philo) == 1)
+	{
+		unlock_mutexes(philo, 2);
+		return (1);
+	}
 	philo_action(philo, "is eating");
 	pthread_mutex_lock(&philo->data->last_meal_mutex);
 	philo->last_meal = timestamp();
@@ -52,12 +60,10 @@ int	is_eating2(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->eat_mutex);
 	if (time_elapsed(philo, 0) == 1)
 	{
-		pthread_mutex_unlock(&philo->data->total_fork[philo->other_fork]);
-		pthread_mutex_unlock(&philo->data->total_fork[philo->my_fork]);
+		unlock_mutexes(philo, 3);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->total_fork[philo->my_fork]);
-	pthread_mutex_unlock(&philo->data->total_fork[philo->other_fork]);
+	unlock_mutexes(philo, 3);
 	usleep(30);
 	return (0);
 }
@@ -99,6 +105,8 @@ int	is_sleeping(t_philo *philosopher)
 		return (1);
 	}
 	pthread_mutex_unlock(&philosopher->data->full_mutex);
+	if (check_death(philosopher) == 1)
+		return (1);
 	philo_action(philosopher, "is sleeping");
 	if (time_elapsed(philosopher, 1) == 1)
 		return (1);
@@ -116,6 +124,8 @@ int	is_thinking(t_philo *philosopher)
 		return (1);
 	}
 	pthread_mutex_unlock(&philosopher->data->full_mutex);
+	if (check_death(philosopher) == 1)
+		return (1);
 	philo_action(philosopher, "is thinking");
 	return (0);
 }

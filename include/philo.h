@@ -6,7 +6,7 @@
 /*   By: rsung <rsung@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 10:50:08 by rsung             #+#    #+#             */
-/*   Updated: 2022/05/30 21:03:59 by rsung            ###   ########.fr       */
+/*   Updated: 2022/06/03 14:33:16 by rsung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,9 @@ int				death_full_check(t_philo *philo_array, t_data *info);
 */
 
 void			*routine_solo(void *a);
-int				check_check(char **argv);
+int				check_check(int argc, char **argv);
+void			overflow_check(char **argv);
+void			unlock_mutexes(t_philo *philo, int mode);
+int				ft_strncmp(char *s1, char *s2, int n);
 
 #endif

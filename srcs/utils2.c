@@ -6,7 +6,7 @@
 /*   By: rsung <rsung@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 15:02:45 by rsung             #+#    #+#             */
-/*   Updated: 2022/05/31 11:34:06 by rsung            ###   ########.fr       */
+/*   Updated: 2022/06/04 17:45:48 by rsung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ int	taking_forks2(t_philo *philo)
 	if (check_death(philo) == 1 || philo->data->full \
 	>= philo->data->number_of_philo)
 	{
-		pthread_mutex_unlock(&philo->data->total_fork[philo->my_fork]);
-		pthread_mutex_unlock(&philo->data->total_fork[philo->other_fork]);
-		pthread_mutex_unlock(&philo->data->full_mutex);
+		unlock_mutexes(philo, 1);
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->data->full_mutex);
+	if (check_death(philo) == 1)
+		return (1);
 	philo_action(philo, "is taking another fork");
 	return (0);
 }
@@ -85,21 +85,30 @@ void	*routine_solo(void *a)
 	philo = (t_philo *)a;
 	if (philo->data->number_of_philo == 1)
 	{
+		pthread_mutex_lock(&philo->data->pa_mutex);
 		temp = time_time(timestamp(), philo->data->start);
 		printf("[%lldms] ", temp);
 		printf("Philo 1 is taking a fork\n");
+		pthread_mutex_unlock(&philo->data->pa_mutex);
 		usleep((int)philo->data->time_to_die * 1000);
 	}
 	return (NULL);
 }
 
-int	check_check(char **argv)
+int	check_check(int argc, char **argv)
 {
 	int	i;
 	int	j;
 
 	i = 1;
 	j = 0;
+	if (argc == 1)
+		return (0);
+	if ((ft_atoi(argv[1]) == 0) || (ft_atoi(argv[1]) > 200))
+	{
+		printf("Invalid number of philo\n");
+		exit (0);
+	}
 	while (argv[i])
 	{
 		j = 0;

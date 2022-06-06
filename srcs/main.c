@@ -6,7 +6,7 @@
 /*   By: rsung <rsung@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 11:04:08 by rsung             #+#    #+#             */
-/*   Updated: 2022/05/30 21:05:46 by rsung            ###   ########.fr       */
+/*   Updated: 2022/06/03 14:33:48 by rsung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ int	main(int argc, char **argv)
 	t_data	info;
 	t_philo	*philo_array;
 
-	if (check_check(argv) == 1)
+	overflow_check(argv);
+	if (check_check(argc, argv) == 1)
 	{
 		printf("Not valid arguments\n");
 		return (0);

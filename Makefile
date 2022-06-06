@@ -6,14 +6,14 @@
 #    By: rsung <rsung@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/10 11:15:29 by rsung             #+#    #+#              #
-#    Updated: 2022/05/31 10:56:34 by rsung            ###   ########.fr        #
+#    Updated: 2022/06/06 09:33:24 by rsung            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 SRCS = $(addprefix srcs/,main.c init.c utils.c routine.c routine_utils.c \
-utils2.c)
+utils2.c utils3.c)
 
 OBJS = $(SRCS:.c=.o)
 

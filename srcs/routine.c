@@ -6,7 +6,7 @@
 /*   By: rsung <rsung@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/11 10:44:27 by rsung             #+#    #+#             */
-/*   Updated: 2022/05/31 10:44:05 by rsung            ###   ########.fr       */
+/*   Updated: 2022/06/03 12:29:24 by rsung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,21 @@ void	philo_action(t_philo *philosopher, char *str)
 		return ;
 	}
 	pthread_mutex_unlock(&philosopher->data->full_mutex);
+	if (check_death(philosopher) == 1)
+		return ;
 	pthread_mutex_lock(&philosopher->data->pa_mutex);
+	if (check_death(philosopher) == 1)
+	{
+		pthread_mutex_unlock(&philosopher->data->pa_mutex);
+		return ;
+	}
 	printf("[%llims] ", time_time(timestamp(), philosopher->data->start));
 	printf("Philo %d ", philosopher->philo_id);
 	printf("%s\n", str);
-	pthread_mutex_unlock(&philosopher->data->pa_mutex);
+	if (ft_strncmp(str, "is dead", 8) != 0)
+		pthread_mutex_unlock(&philosopher->data->pa_mutex);
+	else
+		unlock_mutexes(philosopher, 4);
 	usleep(30);
 }
 
@@ -69,9 +79,6 @@ int	is_dead(t_philo *philo_array, t_data *info)
 		> (long long)info->time_to_die)
 		{
 			pthread_mutex_unlock(&info->last_meal_mutex);
-			pthread_mutex_lock(&info->dead_mutex);
-			info->dead = 1;
-			pthread_mutex_unlock(&info->dead_mutex);
 			philo_action(&philo_array[i], "is dead");
 			return (1);
 		}
@@ -100,9 +107,7 @@ int	taking_forks(t_philo *philo)
 	if (check_death(philo) == 1 || philo->data->full \
 	>= philo->data->number_of_philo)
 	{
-		pthread_mutex_unlock(&philo->data->full_mutex);
-		pthread_mutex_unlock(&philo->data->total_fork[philo->other_fork]);
-		pthread_mutex_unlock(&philo->data->total_fork[philo->my_fork]);
+		unlock_mutexes(philo, 1);
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->data->full_mutex);
